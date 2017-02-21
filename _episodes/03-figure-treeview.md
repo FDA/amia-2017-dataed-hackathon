@@ -1,7 +1,7 @@
 ---
 title: "Recreating Supporting Figure 6 with TreeView"
-teaching: 15
-exercises: 15
+teaching: 10
+exercises: 10
 questions:
 - "Can Supporting Figure 6 be reproduced with the same visualization tool?"
 objectives:
