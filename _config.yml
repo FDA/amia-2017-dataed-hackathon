@@ -11,7 +11,8 @@ title: "Reproducibility of Microarray and Gene Expression Analysis"
 # Contact.  This *must* include the protocol: if it's an email
 # address, it must look like "mailto:lessons@software-carpentry.org",
 # or if it's a URL, "https://gitter.im/username/ProjectName".
-contact: "mailto:Taxiarchis.Botsis@fda.hhs.gov"
+#contact: "mailto:Taxiarchis.Botsis@fda.hhs.gov"
+contact: "https://fda.github.io/amia-2017-dataed-hackathon/
 
 #------------------------------------------------------------
 # Generic settings (should not need to change).
