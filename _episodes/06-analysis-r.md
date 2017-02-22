@@ -1,7 +1,7 @@
-ï»¿---
+---
 title: "Recreating the Analysis with R"
-teaching: 30
-exercises: 20
+teaching: 35
+exercises: 25
 questions:
 - "How can R be used for hierarchical clustering and visualization of gene expression data?"
 - "Can Supporting Figure 6 be recreated in R?"
@@ -16,11 +16,11 @@ keypoints:
 
 In this lesson we will explore how to cluster and visualize the gene expression data from Supporting Figure 6 with R. R has packages for hierarchical clustering and production of heat maps with dendrograms.
 
-As discussed in Lesson 5, the Cluster program was originally used by the authors to perform hierarchical clustering, and TreeView was used to visualize a heat map with dendrograms showing the clustering results. The original data file that was inputted in Cluster is not available, so we again choose the output files from Cluster as the starting point of this lesson. Therefore we will not add steps to transform, center, or normalize the data in R. We will read the SupplFigure6.cdt file exactly as provided, create a similarity metric, perform hierarchical clustering, and visualize the heat map and clustering results.
+As discussed in [Lesson 5]({{ page.root }}/05-analysis-cluster/), the Cluster program was originally used by the authors to perform hierarchical clustering, and TreeView was used to visualize a heat map with dendrograms showing the clustering results. The original data file that was inputted in Cluster is not available, so we again choose the output files from Cluster as the starting point of this lesson. Therefore we will not add steps to transform, center, or normalize the data in R. We will read the SupplFigure6.cdt file exactly as provided, create a similarity metric, perform hierarchical clustering, and visualize the heat map and clustering results.
 
 # Reading the Data
 
-We can begin by loading the additional packages `dendextend` ([see also](https://cran.r-project.org/web/packages/dendextend/vignettes/introduction.html)), `dendextendRcpp`, and `NMF` that will be used in this lesson (they should be installed following the instructions on the [Setup]({{ page.root }}/setup/) page first).
+We can begin by loading the additional packages `dendextend` ([see also](https://cran.r-project.org/web/packages/dendextend/vignettes/introduction.html)), `dendextendRcpp`, and `NMF` that will be used in this lesson (they should installed following the instructions on the [Setup]({{ page.root }}/setup/) page first).
 
 ~~~
 library(dendextend)
@@ -29,7 +29,7 @@ library(NMF)
 ~~~
 {: .source}
 
-As in Lesson 4, we will save the original SupplFigure6.cdt file in the current working directory specified in R, which can be determined with the function `getwd`. Then we can read in this file with the function `read.delim`. We select only the relevant rows and columns and store the gene expression data in a matrix format for use in subsequent steps. The weights for individual genes and arrays are also stored for future use. (Recall from Lesson 5 that EWEIGHT is 1 for all arrays in the data file, but GWEIGHT takes one of four values for genes: 0.3, 0.35, 0.5, 1). These weights will influence the calculation of similarity between genes and arrays, respectively.
+As in [Lesson 4]({{ page.root }}/04-figure-hive-plot/), we will save the original SupplFigure6.cdt file in the current working directory specified in R, which can be determined with the function `getwd`. Then we can read in this file with the function `read.delim`. We select only the relevant rows and columns and store the gene expression data in a matrix format for use in subsequent steps. The weights for individual genes and arrays are also stored for future use. (Recall from [Lesson 5]({{ page.root }}/05-analysis-cluster/) that EWEIGHT is 1 for all arrays in the data file, but GWEIGHT takes one of four values for genes: 0.3, 0.35, 0.5, 1). These weights will influence the calculation of similarity between genes and arrays, respectively.
 
 ~~~
 getwd()
@@ -53,7 +53,7 @@ eweight <- as.numeric(orig_data[3, 5:ncol(orig_data)])
 
 # Creating a Similarity Metric
 
-Next, we write a function `sim` to calculate similarity between pairs of genes and pairs of arrays. SÃ¸rlie et al. selected a similarity metric and an average linkage function in Cluster.  Although the details of the similarity metric are not discussed in the paper, they refer to the work of [Eisen et al.](http://www.pnas.org/content/95/25/14863.full)  As in Lesson 5, we assume that the authors selected uncentered correlation as the similarity metric for both genes and arrays. To write an uncentered correlation function in R, we refer to Section 3.4 of the Cluster 3.0 [user manual](http://bonsai.hgc.jp/~mdehoon/software/cluster/manual/index.html), which explains that missing entries are pairwise deleted during calculation of similarity. We choose to write an if-else statement to get a pair of complete entries. We use the weighted covariance function `cov.wt` in R to incorporate weights.
+Next, we write a function `sim` to calculate similarity between pairs of genes and pairs of arrays. Sørlie et al. selected a similarity metric and an average linkage function in Cluster.  Although the details of the similarity metric are not discussed in the paper, they refer to the work of [Eisen et al](http://www.pnas.org/content/95/25/14863.full).  As in [Lesson 5]({{ page.root }}/05-analysis-cluster/), we assume that the authors selected uncentered correlation as the similarity metric for both genes and arrays. To write an uncentered correlation function in R, we refer to Section 3.4 of the Cluster 3.0 [user manual](http://bonsai.hgc.jp/~mdehoon/software/cluster/manual/index.html), which explains that missing entries are pairwise deleted during calculation of similarity. We choose to write an if-else statement to get a pair of complete entries. We use the weighted covariance function `cov.wt` in R to incorporate weights.
 
 ~~~
 sim<-function(x,y,w){
@@ -70,7 +70,7 @@ sim<-function(x,y,w){
 ~~~
 {: .source}
 
-Now that we are equipped with a function to calculate similarity, we can create distance matrices for arrays and genes. Starting with arrays, we create a square matrix for the arrays and store the similarity of every pair. We create a *distance* matrix by defining distance = 1 â€“ similarity for each pair of arrays. Similarity can take values ranging from -1 to 1. Therefore, pairs of items with high similarity (close to 1), will have a distance close to zero, and pairs with low similarity (close to -1) will have a distance close to 2. Note that `gweight` is used for weighting the indices of the array-pair (not `eweight`).
+Now that we are equipped with a function to calculate similarity, we can create distance matrices for arrays and genes. Starting with arrays, we create a square matrix for the arrays and store the similarity of every pair. We create a *distance* matrix by defining distance = 1 – similarity for each pair of arrays. Similarity can take values ranging from -1 to 1. Therefore, pairs of items with high similarity (close to 1), will have a distance close to zero, and pairs with low similarity (close to -1) will have a distance close to 2. Note that `gweight` is used for weighting the indices of the array-pair (not `eweight`).
 
 ~~~
 a.sim.mat<-matrix(ncol=ncol(mat), nrow=ncol(mat))
@@ -89,7 +89,7 @@ a.dist<-1-as.dist(a.sim.mat)
 ~~~
 {: .source}
 
-Similarly, we create a square matrix for the genes and store the similarity of every pair. We again define distance = 1 â€“ similarity for each pair of genes. Note that `eweight` is used for weighting the indices of the gene-pair.
+Similarly, we create a square matrix for the genes and store the similarity of every pair. We again define distance = 1 – similarity for each pair of genes. Note that `eweight` is used for weighting the indices of the gene-pair.
 
 ~~~
 g.sim.mat<-matrix(ncol=nrow(mat), nrow=nrow(mat))
@@ -116,7 +116,7 @@ a.sim.mat[which(rownames(a.sim.mat)=="NormBreast2"), which(rownames(a.sim.mat)==
 ~~~
 {: .source}
 
-We observe that in our replicate in R, the similarity between these arrays is 0.7835408, which is identical (after rounding) to the result of our re-clustering in Lesson 5. However, as discussed in Lesson 5 the similarity between ARRY120X and ARRY121X is 0.783569336 in the original calculation. Therefore we have already shown that our similarity calculations are not identical to the originals.
+We observe that in our replicate in R, the similarity between these arrays is 0.7835408, which is identical (after rounding) to the result of our re-clustering in [Lesson 5]({{ page.root }}/05-analysis-cluster/). However, as discussed in [Lesson 5]({{ page.root }}/05-analysis-cluster/) the similarity between ARRY120X and ARRY121X is 0.783569336 in the original calculation. Therefore we have already shown that our similarity calculations are not identical to the originals.
 
 For genes, we can compare *116219 GATA3 GATA binding protein 3 Hs.169946 H72474* (corresponding to GENE25X in the original .gtr file) with *101778 GATA3 GATA binding protein 3 Hs.169946 R31441* (corresponding to GENE7X).
 
@@ -125,11 +125,11 @@ g.sim.mat[which(rownames(g.sim.mat)=="116219 GATA3 GATA binding protein 3 Hs.169
 ~~~
 {: .source}
 
-In our replicate, the similarity is 0.9766245, which is identical after rounding to the result of our re-clustering in Lesson 5. As discussed in Lesson 5, the similarity between GENE7X and GENE25X is 0.97668457 in the original calculation.  We conclude that we have not identically recreated the original similarity calculations. It is possible that we have recreated our own steps from Lesson 5 that were performed in Cluster 3.0; however, the similarity matrices are not available from Cluster 3.0 for performing a complete comparison. This lesson does not aim to recreate the similarity matrices from Cluster 3.0.
+In our replicate, the similarity is 0.9766245, which is identical after rounding to the result of our re-clustering in [Lesson 5]({{ page.root }}/05-analysis-cluster/). As discussed in [Lesson 5]({{ page.root }}/05-analysis-cluster/), the similarity between GENE7X and GENE25X is 0.97668457 in the original calculation.  We conclude that we have not identically recreated the original similarity calculations. It is possible that we have recreated our own steps from [Lesson 5]({{ page.root }}/05-analysis-cluster/) that were performed in Cluster 3.0; however, the similarity matrices are not available from Cluster 3.0 for performing a complete comparison. This lesson does not aim to recreate the similarity matrices from Cluster 3.0.
 
 # Performing Hierarchical Clustering
 
-We can proceed to clustering after calculation of the distance matrices. We can cluster arrays and genes independently by using the function `hclust` in R with an average linkage. We re-order the resulting clustering, where possible, to mimic the original order that was reported by the authors. Recall from Lesson 2 that we can re-order the two children of a node without changing the clustering. Finally, we create dendrograms for the arrays and genes for use in the next step, visualization.
+We can proceed to clustering after calculation of the distance matrices. We can cluster arrays and genes independently by using the function `hclust` in R with an average linkage. We re-order the resulting clustering, where possible, to mimic the original order that was reported by the authors. Recall from [Lesson 2]({{ page.root }}/02-hierarchical/) that we can re-order the two children of a node without changing the clustering. Finally, we create dendrograms for the arrays and genes for use in the next step, visualization.
 
 ~~~
 a.hclust<-hclust(a.dist, method="average")
@@ -157,9 +157,9 @@ dev.off()
 ~~~
 {: .source}
 
-<img src="{{ page.root }}/fig/r-array-dend.png" alt="The array dendrogram reclustered by R" />
+<a href="{{ page.root }}/fig/r-array-dend-large.png"><img src="{{ page.root }}/fig/r-array-dend.png" alt="The array dendrogram reclustered by R" /></a>
 
-As in Lesson 5, we find that Norway 83-BE and Norway FU02-BE are clustered as children under the same node in the replicate dendrogram, whereas they are children under different nodes in the original dendrogram (we can see this by inspecting the original SuppleFigure6.atr file).
+As in [Lesson 5]({{ page.root }}/05-analysis-cluster/), we find that Norway 83-BE and Norway FU02-BE are clustered as children under the same node in the replicate dendrogram, whereas they are children under different nodes in the original dendrogram (we can see this by inspecting the original SuppleFigure6.atr file).
 
 For genes, we will inspect the positions of *108924  \*\*Homo sapiens cDNA FLJ34425 fis, clone HHDPC2008297 Hs.120638 N81017* (corresponding to  GENE31X in the original SupplFigure6.gtr file) and *120444 N33 Putative prostate cancer tumor suppressor Hs.71119 H13424* (corresponding to GENE12X). We will plot and color these genes in red for clarity. The gene dendrogram will be saved as *Lesson6_geneDend.png* in the current working directory.
 
@@ -175,9 +175,9 @@ dev.off()
 ~~~
 {: .source}
 
-<img src="{{ page.root }}/fig/r-gene-dend.png" alt="The gene dendrogram reclustered by R" />
+<a href="{{ page.root }}/fig/r-gene-dend-large.png"><img src="{{ page.root }}/fig/r-gene-dend.png" alt="The gene dendrogram reclustered by R" /></a>
 
-In the replicate figure, we observe that these genes are children under different nodes, whereas in the original figure they are children of the same node (we can see this by inspecting the original SupplFigure6.gtr file). They are also ordered far apart from each other in the replicate figure, whereas they are ordered next to each other in the original figure. With these counterexamples, we conclude we have not recreated the identical dendrograms presented by SÃ¸rlie et al.
+In the replicate figure, we observe that these genes are children under different nodes, whereas in the original figure they are children of the same node (we can see this by inspecting the original SupplFigure6.gtr file). They are also ordered far apart from each other in the replicate figure, whereas they are ordered next to each other in the original figure. With these counterexamples, we conclude we have not recreated the identical dendrograms presented by Sørlie et al.
 
 Next, we plot a heat map using the function `aheatmap` in the package `NMF`. Our replicate dendrograms have been used to order the rows and columns of the heat map accordingly.
 
@@ -188,7 +188,7 @@ dev.off()
 ~~~
 {: .source}
 
-<img src="{{ page.root }}/fig/r-heat-map.png" alt="The heat map generated by R" />
+<a href="{{ page.root }}/fig/r-heat-map-large.png"><img src="{{ page.root }}/fig/r-heat-map.png" alt="The heat map generated by R" /></a>
 
 Due to the differences between the replicate and original dendrograms, it follows that the replicate heat map is not ordered identically to the original figure. We also observe that the color coding in the replicate heat map is not identical to the original figure. For example, it is unclear how gene expression values that exceed 5.6 overexpression or 5.6 underexpression were represented with the original color scale. The replicate heat map uses a color scale with a greater range of values. In this lesson, we have not aimed to direct the values of the heat map to achieve the same color coding. Additional exploration is encouraged outside of this lesson.
 
