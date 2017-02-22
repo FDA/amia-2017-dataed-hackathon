@@ -100,7 +100,7 @@ mat.thresh[indices[seq(2, nrow(indices), by=2), ] ] <- NA
 ~~~
 {: .source}
 
-For this data to represent a network, we need to transform the matrix so it looks like an adjacency matrix.  An adjacency matrix (***A***) lists all the nodes in a network as both column names and row names, creating a square matrix.  The value `a`<sub>`ij`</sub> within the matrix represents the weight of the edge between the nodes corresponding to row `i` and column `j`.  Fortunately, we don't have to add any new values to create the proper adjacency matrix, but we do need to add new columns (representing the gene nodes) and new rows (representing the array nodes).
+For this data to represent a network, we need to transform the matrix so it looks like an adjacency matrix.  An adjacency matrix (***A***) lists all the nodes in a network as both column names and row names, creating a square matrix.  The value *a*<sub>*ij*</sub> within the matrix represents the weight of the edge between the nodes corresponding to row *i* and column *j*.  Fortunately, we don't have to add any new values to create the proper adjacency matrix, but we do need to add new columns (representing the gene nodes) and new rows (representing the array nodes).
 
 ~~~
 # First add all the gene names from the rows as new columns (on the right)

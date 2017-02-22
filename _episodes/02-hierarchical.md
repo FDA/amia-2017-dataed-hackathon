@@ -23,7 +23,7 @@ Hierarchical clustering groups observations and displays them in dendrograms.  A
 
 At the bottom of the dendrogram, each observation is shown as its own cluster.  Moving up the dendrogram, the observations that are least dissimilar to each other are clustered, which reduces the number of observations for future clustering (starting with *n* observations, clustering two observations leads to *n*−1 observations for future clustering).  In this example dendrogram, the first two observations to merge are the ones labeled 4 and 9.  This process of merging the least dissimilar clusters repeats until all observations merge into a single cluster at the top of the dendrogram.
 
-The height at which observations merge is the dissimilarity measure used to assess differences between clusters.  The lower in the dendrogram two observations merge, the more similar (i.e. less dissimilar) the two observations (or clusters of observations) are to each other.  The higher in the dendrogram two observations merge, the more dissimilar the observations are.  The dissimilarity metric value that defines the height can be seen in the scale bar to the left of the dendrogram in the sample above.  It is important to note however that not all dendrograms contain such a scale bar and are often used to illustrate similarity between observations.
+The height at which observations merge is the dissimilarity measure used to assess differences between clusters.  The lower in the dendrogram two observations merge, the more similar (i.e. less dissimilar) the two observations (or clusters of observations) are to each other.  The higher in the dendrogram two observations merge, the more dissimilar the observations are.  The dissimilarity metric value that defines the height can be seen in the scale bar to the left of the dendrogram in the sample above.  It is important to note however that not all dendrograms contain such a scale bar.
 
 As hierarchical clustering represents data hierarchically, the number of possible clusters can range from one to *n* depending on the number of observations (*n*) and the dissimilarity value chosen.  To determine the number of clusters you will use for further analysis, pick an appropriate dissimilarity value and make a horizontal cut across the dendrogram.  The number of clusters beneath the height of this cut is the final number of clusters.
 
@@ -51,5 +51,5 @@ It is clear from Supporting Figure 6 that hierarchical clustering played a major
 {: .challenge}
 
 > ## 2
-> Refer to Supporting Figure 6.  Which of the five cancer subtypes has the most homogeneous tumors?
+> Refer to the array dendrogram for Supporting Figure 6 that is recreated in the lesson above.  Which of the five colored cancer subtypes has the most homogeneous tumors?
 {: .challenge}

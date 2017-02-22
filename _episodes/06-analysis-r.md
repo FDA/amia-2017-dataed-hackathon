@@ -1,7 +1,7 @@
 ---
 title: "Recreating the Analysis with R"
-teaching: 30
-exercises: 20
+teaching: 35
+exercises: 25
 questions:
 - "How can R be used for hierarchical clustering and visualization of gene expression data?"
 - "Can Supporting Figure 6 be recreated in R?"
