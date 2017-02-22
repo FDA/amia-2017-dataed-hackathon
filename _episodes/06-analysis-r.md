@@ -53,7 +53,7 @@ eweight <- as.numeric(orig_data[3, 5:ncol(orig_data)])
 
 # Creating a Similarity Metric
 
-Next, we write a function `sim` to calculate similarity between pairs of genes and pairs of arrays. Sørlie et al. selected a similarity metric and an average linkage function in Cluster.  Although the details of the similarity metric are not discussed in the paper, they refer to the work of [Eisen et al](http://www.pnas.org/content/95/25/14863.full).  As in [Lesson 5]({{ page.root }}/05-analysis-cluster/), we assume that the authors selected uncentered correlation as the similarity metric for both genes and arrays. To write an uncentered correlation function in R, we refer to Section 3.4 of the Cluster 3.0 [user manual](http://bonsai.hgc.jp/~mdehoon/software/cluster/manual/index.html), which explains that missing entries are pairwise deleted during calculation of similarity. We choose to write an if-else statement to get a pair of complete entries. We use the weighted covariance function `cov.wt` in R to incorporate weights.
+Next, we write a function `sim` to calculate similarity between pairs of genes and pairs of arrays. SÃ¸rlie et al. selected a similarity metric and an average linkage function in Cluster.  Although the details of the similarity metric are not discussed in the paper, they refer to the work of [Eisen et al](http://www.pnas.org/content/95/25/14863.full).  As in [Lesson 5]({{ page.root }}/05-analysis-cluster/), we assume that the authors selected uncentered correlation as the similarity metric for both genes and arrays. To write an uncentered correlation function in R, we refer to Section 3.4 of the Cluster 3.0 [user manual](http://bonsai.hgc.jp/~mdehoon/software/cluster/manual/index.html), which explains that missing entries are pairwise deleted during calculation of similarity. We choose to write an if-else statement to get a pair of complete entries. We use the weighted covariance function `cov.wt` in R to incorporate weights.
 
 ~~~
 sim<-function(x,y,w){
@@ -70,7 +70,7 @@ sim<-function(x,y,w){
 ~~~
 {: .source}
 
-Now that we are equipped with a function to calculate similarity, we can create distance matrices for arrays and genes. Starting with arrays, we create a square matrix for the arrays and store the similarity of every pair. We create a *distance* matrix by defining distance = 1 – similarity for each pair of arrays. Similarity can take values ranging from -1 to 1. Therefore, pairs of items with high similarity (close to 1), will have a distance close to zero, and pairs with low similarity (close to -1) will have a distance close to 2. Note that `gweight` is used for weighting the indices of the array-pair (not `eweight`).
+Now that we are equipped with a function to calculate similarity, we can create distance matrices for arrays and genes. Starting with arrays, we create a square matrix for the arrays and store the similarity of every pair. We create a *distance* matrix by defining distance = 1 - similarity for each pair of arrays. Similarity can take values ranging from -1 to 1. Therefore, pairs of items with high similarity (close to 1), will have a distance close to zero, and pairs with low similarity (close to -1) will have a distance close to 2. Note that `gweight` is used for weighting the indices of the array-pair (not `eweight`).
 
 ~~~
 a.sim.mat<-matrix(ncol=ncol(mat), nrow=ncol(mat))
@@ -89,7 +89,7 @@ a.dist<-1-as.dist(a.sim.mat)
 ~~~
 {: .source}
 
-Similarly, we create a square matrix for the genes and store the similarity of every pair. We again define distance = 1 – similarity for each pair of genes. Note that `eweight` is used for weighting the indices of the gene-pair.
+Similarly, we create a square matrix for the genes and store the similarity of every pair. We again define distance = 1 - similarity for each pair of genes. Note that `eweight` is used for weighting the indices of the gene-pair.
 
 ~~~
 g.sim.mat<-matrix(ncol=nrow(mat), nrow=nrow(mat))
@@ -177,7 +177,7 @@ dev.off()
 
 <a href="{{ page.root }}/fig/r-gene-dend-large.png"><img src="{{ page.root }}/fig/r-gene-dend.png" alt="The gene dendrogram reclustered by R" /></a>
 
-In the replicate figure, we observe that these genes are children under different nodes, whereas in the original figure they are children of the same node (we can see this by inspecting the original SupplFigure6.gtr file). They are also ordered far apart from each other in the replicate figure, whereas they are ordered next to each other in the original figure. With these counterexamples, we conclude we have not recreated the identical dendrograms presented by Sørlie et al.
+In the replicate figure, we observe that these genes are children under different nodes, whereas in the original figure they are children of the same node (we can see this by inspecting the original SupplFigure6.gtr file). They are also ordered far apart from each other in the replicate figure, whereas they are ordered next to each other in the original figure. With these counterexamples, we conclude we have not recreated the identical dendrograms presented by SÃ¸rlie et al.
 
 Next, we plot a heat map using the function `aheatmap` in the package `NMF`. Our replicate dendrograms have been used to order the rows and columns of the heat map accordingly.
 
