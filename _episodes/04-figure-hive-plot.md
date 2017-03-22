@@ -20,7 +20,7 @@ In this lesson, we will use the R language to create a network based on the expr
 
 # Introduction to Hive Plots
 
-Large and complex networks are not easily represented by traditional networks visualizations, as they can become cluttered and difficult to interpret.  [Hive Plots](http://www.hiveplot.net/) are a relatively new method for displaying large network data, where nodes are placed along meaningful axes, providing a quantitative aspect to the visualization that is often lacking in other network representations.
+Large and complex networks are not easily represented by traditional network visualizations, as they can become cluttered and difficult to interpret.  [Hive Plots](http://www.hiveplot.net/) are a relatively new method for displaying large network data, where nodes are placed along meaningful axes, providing a quantitative aspect to the visualization that is often lacking in other network representations.
 
 ## The HiveR Package
 
@@ -63,7 +63,7 @@ By default, R will be running in your Documents folder on Windows, so let's put 
 Now we're able to read in the file and begin to set up our R data structure, which will be a matrix containing the numeric expression values.
 
 ~~~
-orig_data <- read.delim("SupplFigure6.cdt",
+orig_data <- read.delim("Suppl_Figure6.cdt",
                         header=FALSE,
                         as.is=TRUE)
 
@@ -220,11 +220,12 @@ There is more we can do to make this hive plot clearly display the same informat
 
 ~~~
 f6hive$nodes$color <- "gray60"
-subclass.colors <- read.csv("subtype colors.csv",
+subclass.colors <- read.csv("subtype_colors.csv",
                             header=TRUE, stringsAsFactors = FALSE)
 replace <- subclass.colors$color[match(f6hive$nodes$lab,
                                        subclass.colors$array)]
 f6hive$nodes$color[!is.na(replace)] <- replace[!is.na(replace)]
+plotHive(f6hive, bkgnd = "white")
 ~~~
 {: .source}
 
